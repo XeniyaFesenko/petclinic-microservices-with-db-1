@@ -103,6 +103,11 @@
                             <groupId>com.spotify</groupId>
                             <artifactId>docker-maven-plugin</artifactId>
                             <version>${docker.plugin.version}</version>
+
+
+
+
+                            
                         </plugin>
                     </plugins>
                 </build>
