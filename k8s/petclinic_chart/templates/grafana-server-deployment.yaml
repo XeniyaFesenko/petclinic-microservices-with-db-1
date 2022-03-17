@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml -o petclinic_chart/templates
+    kompose.cmd: kompose convert -f k8s/docker-compose.yml -o k8s/base
     kompose.image-pull-secret: regcred
-    kompose.version: 1.26.1 (a9d05d509)
+    kompose.version: 1.22.0 (955b78124)
   creationTimestamp: null
   labels:
     io.kompose.service: grafana-server
@@ -18,19 +18,15 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml -o petclinic_chart/templates
+        kompose.cmd: kompose convert -f k8s/docker-compose.yml -o k8s/base
         kompose.image-pull-secret: regcred
-        kompose.version: 1.26.1 (a9d05d509)
+        kompose.version: 1.22.0 (955b78124)
       creationTimestamp: null
       labels:
         io.kompose.service: grafana-server
     spec:
-      initContainers:
-      - name: init-discovery-server
-        image: busybox
-        command: ['sh', '-c', 'until nc -z discovery-server:8761; do echo waiting for discovery-server; sleep 2; done;']    
       containers:
-        - image: '{{ .Values.IMAGE_TAG_GRAFANA_SERVICE }}'
+        - image: IMAGE_TAG_GRAFANA_SERVICE
           name: grafana-server
           ports:
             - containerPort: 3000
@@ -38,4 +34,8 @@ spec:
       imagePullSecrets:
         - name: regcred
       restartPolicy: Always
+      initContainers:
+      - name: init-discovery-server
+        image: busybox
+        command: ['sh', '-c', 'until nc -z discovery-server:8761; do echo waiting for discovery-server; sleep 2; done;']
 status: {}
